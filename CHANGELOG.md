@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 <!-- changelog:entries -->
 
+## [0.1.44-rc.3] - 2026-03-02
+
+
+### Documentation
+
+- Docs: add human-in-the-loop approval docs to SDK READMEs (#212)
+
+Add approval workflow documentation with code examples to all three
+SDK READMEs (Python, TypeScript, Go), covering the waiting state
+feature for pausing agent execution pending human review.
+
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com> (88f24cf)
+
 ## [0.1.44-rc.2] - 2026-03-02
 
 
