@@ -6,6 +6,77 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 <!-- changelog:entries -->
 
+## [0.1.46-rc.2] - 2026-03-05
+
+
+### Added
+
+- Feat: native LLM tool-calling support via discover → ai → call pipeline (#228)
+
+* feat: add native LLM tool-calling support via discover → ai → call pipeline (#225)
+
+Add tools= parameter to app.ai() that enables automatic tool-call loops:
+discover available capabilities, convert to LLM tool schemas, dispatch
+calls via app.call(), and feed results back until the LLM produces a
+final response.
+
+Python SDK:
+- New tool_calling module with capability-to-schema converters
+- Tool-call execution loop with multi-turn support
+- Progressive discovery (lazy schema hydration)
+- Guardrails (max_turns, max_tool_calls)
+- Per-call observability (ToolCallTrace with latency tracking)
+
+Go SDK:
+- Tool types (ToolDefinition, ToolCall) on ai.Request/Response
+- CapabilitiesToToolDefinitions converter
+- ExecuteToolCallLoop on ai.Client
+- AIWithTools convenience method on Agent
+- WithTools option for ai.Request
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+* fix(sdk/python): harden tool-calling DX — rate limiting, stream guard, typed response
+
+- Wrap tool-calling LLM calls with rate limiter and model fallbacks
+  (previously bypassed both, causing naked 429 failures in production)
+- Guard stream=True + tools= with clear ValueError
+- Type tools parameter with Union instead of Any for IDE discoverability
+- Replace monkey-patched _tool_call_trace with typed ToolCallResponse wrapper
+  (exposes .trace, .text, .response with __getattr__ delegation)
+- Track hydration_retries in ToolCallTrace for lazy hydration observability
+- Add ToolCallResponse tests and update existing tests
+
+Refs: #225, #229
+
+* fix(test): update harness schema test to match #230 prompt wording change
+
+* feat: add TS SDK tool-calling parity, lazy hydration, examples, and E2E-tested fixes
+
+- TypeScript SDK: ToolCalling.ts with full discover/filter/lazy/guardrails pipeline
+- TypeScript SDK: lazy hydration uses non-executable selection pass then hydrates
+- TypeScript SDK: OpenRouter/Ollama use .chat() API (not Responses API)
+- TypeScript SDK: ReasonerContext.aiWithTools() for ctx-level tool calling
+- Python SDK: fix invocation_target→call_target conversion in tool dispatch
+- Python/TS: tool name sanitization (colons→double underscores) for LLM compat
+- Examples: Python + TS orchestrator/worker/test covering all Sam's #225 cases
+- E2E tested with GPT-4o-mini and Gemini 2.0 Flash via OpenRouter
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+* fix(examples): use ctx.input and app.serve() in TS worker example
+
+SkillHandler receives a single SkillContext arg — input lives on ctx.input,
+not as a second parameter. Also fix app.run() → app.serve() to match the
+TS SDK's actual API. Found during E2E manual testing.
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+---------
+
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com>
+Co-authored-by: Santosh <santosh@agentfield.ai> (40638d0)
+
 ## [0.1.46-rc.1] - 2026-03-05
 
 
