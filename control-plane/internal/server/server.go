@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/Agent-Field/agentfield/control-plane/internal/config"
@@ -79,6 +80,7 @@ type AgentFieldServer struct {
 	adminGRPCPort          int
 	webhookDispatcher      services.WebhookDispatcher
 	observabilityForwarder services.ObservabilityForwarder
+	configMu               sync.RWMutex
 }
 
 // NewAgentFieldServer creates a new instance of the AgentFieldServer.
@@ -102,6 +104,13 @@ func NewAgentFieldServer(cfg *config.Config) (*AgentFieldServer, error) {
 	storageProvider, cacheProvider, err := factory.CreateStorage(cfg.Storage)
 	if err != nil {
 		return nil, err
+	}
+
+	// Overlay database-stored config if AGENTFIELD_CONFIG_SOURCE=db
+	if src := os.Getenv("AGENTFIELD_CONFIG_SOURCE"); src == "db" {
+		if err := overlayDBConfig(cfg, storageProvider); err != nil {
+			fmt.Printf("Warning: failed to load config from database: %v\n", err)
+		}
 	}
 
 	Router := gin.Default()
@@ -421,6 +430,21 @@ func NewAgentFieldServer(cfg *config.Config) (*AgentFieldServer, error) {
 		registryWatcherCancel:  nil,
 		adminGRPCPort:          adminPort,
 	}, nil
+}
+
+// configReloadFn returns a function that reloads config from the database,
+// or nil if AGENTFIELD_CONFIG_SOURCE is not set to "db".
+// The returned function acquires configMu to prevent data races with
+// concurrent readers of s.config.
+func (s *AgentFieldServer) configReloadFn() handlers.ConfigReloadFunc {
+	if src := os.Getenv("AGENTFIELD_CONFIG_SOURCE"); src != "db" {
+		return nil
+	}
+	return func() error {
+		s.configMu.Lock()
+		defer s.configMu.Unlock()
+		return overlayDBConfig(s.config, s.storage)
+	}
 }
 
 // Start initializes and starts the AgentFieldServer.
@@ -1529,6 +1553,13 @@ func (s *AgentFieldServer) setupRoutes() {
 			logger.Logger.Info().Msg("📋 Authorization admin routes registered")
 		}
 
+		// Config storage routes (admin-authenticated)
+		{
+			configHandlers := handlers.NewConfigStorageHandlers(s.storage, s.configReloadFn())
+			configHandlers.RegisterRoutes(agentAPI)
+			logger.Logger.Info().Msg("Config storage routes registered")
+		}
+
 		// Connector routes (authenticated with separate connector token)
 		if s.config.Features.Connector.Enabled && s.config.Features.Connector.Token != "" {
 			connectorGroup := agentAPI.Group("/connector")
@@ -1543,6 +1574,14 @@ func (s *AgentFieldServer) setupRoutes() {
 				s.didService,
 			)
 			connectorHandlers.RegisterRoutes(connectorGroup)
+
+			// Config management routes for connector
+			configGroup := connectorGroup.Group("")
+			configGroup.Use(middleware.ConnectorCapabilityCheck("config_management", s.config.Features.Connector.Capabilities))
+			{
+				configHandlers := handlers.NewConfigStorageHandlers(s.storage, s.configReloadFn())
+				configHandlers.RegisterRoutes(configGroup)
+			}
 
 			logger.Logger.Info().Msg("🔌 Connector routes registered")
 		}
