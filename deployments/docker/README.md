@@ -8,13 +8,27 @@ This folder contains a small Docker Compose setup for evaluating AgentField loca
 
 ## Quick start
 
+From the repository root:
+
+```bash
+docker compose -f deployments/docker/docker-compose.yml up -d --build
+```
+
+Or from this directory:
+
 ```bash
 cd deployments/docker
-docker compose --profile python-demo up --build
+docker compose up -d --build
 ```
 
 Open the UI:
 - `http://localhost:8080/ui/`
+
+To include the Python demo agent, add the `python-demo` profile:
+
+```bash
+docker compose -f deployments/docker/docker-compose.yml --profile python-demo up -d --build
+```
 
 ## Execute an agent via the control plane
 
@@ -60,6 +74,5 @@ The control plane must be able to call your agent at the URL it registers.
 ## Cleanup
 
 ```bash
-cd deployments/docker
-docker compose --profile python-demo down -v
+docker compose -f deployments/docker/docker-compose.yml --profile python-demo down -v
 ```
