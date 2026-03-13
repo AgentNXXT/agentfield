@@ -6,6 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 <!-- changelog:entries -->
 
+## [0.1.54-rc.2] - 2026-03-13
+
+
+### Added
+
+- Feat(sdk): surface cost_usd and usage from .ai() responses (#264)
+
+* feat(sdk): surface cost_usd and usage from .ai() responses
+
+MultimodalResponse now exposes cost_usd (estimated via litellm) and
+usage (token counts) extracted from litellm response objects.  This
+enables downstream consumers like pr-af to track .ai() call costs
+instead of hardcoding them to zero.
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+* fix: remove unused pytest import to pass linting
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+---------
+
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com> (3944cb6)
+
+
+
+### Documentation
+
+- Docs: add UTM tracking to example project links in README
+
+Replace direct GitHub links for SWE-AF, Deep Research, MongoDB, and
+sec-af with tracked redirects through agentfield.ai/github/* routes
+to measure README-driven traffic via Umami analytics. (96cbb77)
+
 ## [0.1.54-rc.1] - 2026-03-13
 
 
