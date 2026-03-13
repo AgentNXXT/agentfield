@@ -46,7 +46,7 @@ Write [Python](https://agentfield.ai/api/python-sdk/overview), [Go](https://agen
 <table>
   <tr>
     <td align="center" width="33%">
-      <a href="https://github.com/Agent-Field/SWE-AF">
+      <a href="https://agentfield.ai/github/swe-af?utm_source=github-readme&utm_medium=referral">
         <img src="assets/examples/autonomous-engineering-team.png" alt="Autonomous Engineering Team" />
       </a>
       <br/>
@@ -54,10 +54,10 @@ Write [Python](https://agentfield.ai/api/python-sdk/overview), [Go](https://agen
       <br/>
       <sub>One API call spins up PM, architect, coders, QA, reviewers — hundreds of coordinated agents that plan, build, test, and ship.</sub>
       <br/><br/>
-      <a href="https://github.com/Agent-Field/SWE-AF">GitHub →</a>
+      <a href="https://agentfield.ai/github/swe-af?utm_source=github-readme&utm_medium=referral">GitHub →</a>
     </td>
     <td align="center" width="33%">
-      <a href="https://github.com/Agent-Field/af-deep-research">
+      <a href="https://agentfield.ai/github/deepresearch?utm_source=github-readme&utm_medium=referral">
         <img src="assets/examples/deep-research-engine.png" alt="Deep Research Engine" />
       </a>
       <br/>
@@ -65,10 +65,10 @@ Write [Python](https://agentfield.ai/api/python-sdk/overview), [Go](https://agen
       <br/>
       <sub>Recursive research backend. Spawns parallel agents, evaluates quality, generates deeper agents, and recurses — 10,000+ agents per query.</sub>
       <br/><br/>
-      <a href="https://github.com/Agent-Field/af-deep-research">GitHub →</a>
+      <a href="https://agentfield.ai/github/deepresearch?utm_source=github-readme&utm_medium=referral">GitHub →</a>
     </td>
     <td align="center" width="33%">
-      <a href="https://github.com/Agent-Field/af-reactive-atlas-mongodb">
+      <a href="https://agentfield.ai/github/mongodb?utm_source=github-readme&utm_medium=referral">
         <img src="assets/examples/reactive-database-layer.png" alt="Reactive MongoDB Intelligence" />
       </a>
       <br/>
@@ -76,12 +76,12 @@ Write [Python](https://agentfield.ai/api/python-sdk/overview), [Go](https://agen
       <br/>
       <sub>Atlas Triggers + agent reasoning. Documents arrive raw and leave enriched — risk scores, pattern detection, evidence chains. No application code.</sub>
       <br/><br/>
-      <a href="https://github.com/Agent-Field/af-reactive-atlas-mongodb">GitHub →</a>
+      <a href="https://agentfield.ai/github/mongodb?utm_source=github-readme&utm_medium=referral">GitHub →</a>
     </td>
   </tr>
   <tr>
     <td align="center" width="33%">
-      <a href="https://github.com/Agent-Field/sec-af">
+      <a href="https://agentfield.ai/github/sec-af?utm_source=github-readme&utm_medium=referral">
         <img src="assets/examples/ai-security-auditor.png" alt="Autonomous Security Audit" />
       </a>
       <br/>
@@ -89,7 +89,7 @@ Write [Python](https://agentfield.ai/api/python-sdk/overview), [Go](https://agen
       <br/>
       <sub>250 coordinated agents trace every vulnerability source-to-sink and adversarially verify each finding. Confirmed exploits, not pattern flags — plugs into GitHub Actions CI.</sub>
       <br/><br/>
-      <a href="https://github.com/Agent-Field/sec-af">GitHub →</a>
+      <a href="https://agentfield.ai/github/sec-af?utm_source=github-readme&utm_medium=referral">GitHub →</a>
     </td>
     <td width="33%"></td>
     <td width="33%"></td>
