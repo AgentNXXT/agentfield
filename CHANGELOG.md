@@ -6,6 +6,55 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 <!-- changelog:entries -->
 
+## [0.1.54-rc.1] - 2026-03-13
+
+
+### Fixed
+
+- Fix: reap stale workflow executions and use updated_at for staleness (#262)
+
+* fix: reap stale workflow executions and use updated_at for staleness detection
+
+The existing MarkStaleExecutions only covered the executions table and
+used started_at to detect staleness, which missed orphaned workflow
+executions entirely and could incorrectly timeout legitimately long-running
+executions. This change:
+
+- Switches staleness detection from started_at to updated_at so only
+  executions with no recent activity are reaped
+- Adds MarkStaleWorkflowExecutions to handle the workflow_executions
+  table where orphaned child executions get permanently stuck in
+  running state when their parent fails
+- Wires both into the existing ExecutionCleanupService background loop
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+* test: add functional tests for stale execution reaper with real SQLite
+
+Tests run against a real database (no mocks) covering:
+- Stuck executions reaped while active ones are preserved
+- Long-running executions with recent activity NOT incorrectly reaped
+- Orphaned workflow children reaped when parent already failed
+- Waiting-state executions reaped after inactivity
+- Batch limit respected across multiple reaper passes
+- End-to-end scenario: parent fails, children stuck in both tables
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+* fix: use COALESCE fallback for NULL updated_at in stale reaper queries
+
+- Use COALESCE(updated_at, created_at, started_at) in both
+  MarkStaleExecutions and MarkStaleWorkflowExecutions to handle
+  rows where updated_at was never set
+- Add invariant comment documenting that updated_at must be bumped
+  on every meaningful activity for staleness detection to work
+- Add tests for NULL updated_at scenario on both execution types
+
+---------
+
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com>
+Co-authored-by: Santosh <santosh@agentfield.ai> (56410a6)
+
 ## [0.1.53] - 2026-03-12
 
 ## [0.1.53-rc.1] - 2026-03-12
